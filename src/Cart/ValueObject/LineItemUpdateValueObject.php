@@ -13,14 +13,14 @@ class LineItemUpdateValueObject
     ) {
     }
 
-    /**
-     * @return static
-     */
     public static function create(): self
     {
         return new self();
     }
 
+    /**
+     * @param array<int|string, mixed> $requestData
+     */
     public static function fromRequestPayload(array $requestData): self
     {
         $instance = new self();

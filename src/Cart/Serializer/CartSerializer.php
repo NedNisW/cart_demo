@@ -10,12 +10,14 @@ use App\Cart\Service\CartCalculationService;
 
 class CartSerializer
 {
+    private CartSerializerConfig $cartSerializerConfig;
+
     public function __construct(
         private readonly CartCalculationService $cartCalculationService,
         private readonly LineItemSerializer $lineItemSerializer,
-        private ?CartSerializerConfig $config
+        ?CartSerializerConfig $config
     ) {
-        $this->config ??= CartSerializerConfig::create();
+        $this->cartSerializerConfig = $config ?? CartSerializerConfig::create();
     }
 
     /**
@@ -24,16 +26,19 @@ class CartSerializer
     public function withConfig(CartSerializerConfig $config): self
     {
         $new = clone $this;
-        $new->config = $config;
+        $new->cartSerializerConfig = $config;
 
         return $new;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function serialize(Cart $cart): array
     {
         $data = $this->getBaseData($cart);
 
-        if ($this->config->isWithLineItems()) {
+        if ($this->cartSerializerConfig->isWithLineItems()) {
             $data['lineItems'] = $cart->getLineItems()->map(
                 fn (LineItem $item) => $this->lineItemSerializer->serialize($item)
             )->toArray();
@@ -42,6 +47,9 @@ class CartSerializer
         return $data;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getBaseData(Cart $cart): array
     {
         return [

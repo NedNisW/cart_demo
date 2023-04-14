@@ -11,6 +11,7 @@ use App\Cart\Exception\ProductAlreadyInCartException;
 use App\Cart\Repository\LineItemRepository;
 use App\Cart\ValueObject\LineItemUpdateValueObject;
 use App\Product\Entity\Product;
+use InvalidArgumentException;
 use Symfony\Component\Uid\Uuid;
 
 class LineItemService
@@ -25,7 +26,9 @@ class LineItemService
         $lineItem = $this->lineItemRepository->findByIdAndCart($lineItemId, $cartId);
 
         if (!$lineItem) {
-            throw new LineItemNotFoundException($lineItemId);
+            throw new LineItemNotFoundException(
+                sprintf('Line Item with ID "%s" not found.', $lineItemId)
+            );
         }
 
         return $lineItem;
@@ -36,7 +39,9 @@ class LineItemService
         $lineItem = $this->lineItemRepository->findByCartAndProduct($cartId, $sku);
 
         if (!$lineItem) {
-            throw new LineItemNotFoundException($lineItem);
+            throw new LineItemNotFoundException(
+                sprintf('Line Item for Cart "%s" and SKU "%d" not found.', $cartId, $sku)
+            );
         }
 
         return $lineItem;
@@ -59,8 +64,14 @@ class LineItemService
      */
     public function createByCartAndProduct(Cart $cart, Product $product, int $amount = 1): LineItem
     {
-        if ($this->lineItemRepository->existByCartAndProduct($cart->getId(), $product->getId())) {
-            throw new ProductAlreadyInCartException($cart->getId(), $product->getSku());
+        $cartId = $cart->getId();
+        $productId = $product->getId();
+        if (!$cartId || !$productId) {
+            throw new InvalidArgumentException('Either Cart or Product has no ID set.');
+        }
+
+        if ($this->lineItemRepository->existByCartAndProduct($cartId, $productId)) {
+            throw new ProductAlreadyInCartException($cartId, $productId);
         }
 
         $lineItem = LineItem::createForCartAndProduct($cart, $product, $amount);

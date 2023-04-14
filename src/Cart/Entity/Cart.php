@@ -23,6 +23,9 @@ class Cart
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
     private ?Uuid $id;
 
+    /**
+     * @var Collection<int, LineItem>
+     */
     #[ORM\OneToMany(mappedBy: 'cart', targetEntity: LineItem::class)]
     private Collection $lineItems;
 
@@ -53,6 +56,9 @@ class Cart
         return $this->updatedAt;
     }
 
+    /**
+     * @return Collection<int, LineItem>
+     */
     public function getLineItems(): Collection
     {
         return $this->lineItems;

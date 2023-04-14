@@ -19,7 +19,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class LineItemController extends AbstractController
 {
     public function __construct(
-        private readonly ProductRepository $productRepository,
         private readonly LineItemService $lineItemService,
         private readonly CartService $cartService,
         private readonly ProductInfoService $productInfoService,
@@ -35,9 +34,10 @@ class LineItemController extends AbstractController
                 $this->uuidService->toUuid($cartId)
             );
 
+            /** @var array<int|string, mixed> $rawData */
             $rawData = json_decode($request->getContent(), true, flags: JSON_THROW_ON_ERROR);
 
-            $productId = $rawData['product_id'];
+            $productId = is_string($rawData['product_id'] ?? null) ? $rawData['product_id'] : '';
             $product = $this->productInfoService->getProduct($this->uuidService->toUuid($productId));
 
             $lineItem = $this->lineItemService->createByCartAndProduct($cart, $product);
@@ -75,6 +75,7 @@ class LineItemController extends AbstractController
                 $this->uuidService->toUuid($cartId)
             );
 
+            /** @var array<int|string, mixed> $rawData */
             $rawData = json_decode($request->getContent(), true, flags: JSON_THROW_ON_ERROR);
             $lineItemUpdateValueObject = LineItemUpdateValueObject::fromRequestPayload($rawData);
 

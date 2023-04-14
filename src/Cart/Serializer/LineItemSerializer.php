@@ -10,11 +10,13 @@ use Traversable;
 
 class LineItemSerializer
 {
+    private LineItemSerializerConfig $lineItemSerializerConfig;
+
     public function __construct(
-        private ?LineItemSerializerConfig $lineItemSerializerConfig,
+        ?LineItemSerializerConfig $lineItemSerializerConfig,
         private readonly ProductSerializer $productSerializer,
     ) {
-        $this->lineItemSerializerConfig ??= LineItemSerializerConfig::create();
+        $this->lineItemSerializerConfig = $lineItemSerializerConfig ?? LineItemSerializerConfig::create();
     }
 
     /**
@@ -28,6 +30,9 @@ class LineItemSerializer
         return $new;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function serialize(LineItem $lineItem): array
     {
         $data = $this->getBaseData($lineItem);
@@ -41,7 +46,7 @@ class LineItemSerializer
 
     /**
      * @param Traversable<LineItem> $traversable
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function serializeAll(Traversable $traversable): array
     {
@@ -54,6 +59,9 @@ class LineItemSerializer
         return $data;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getBaseData(LineItem $lineItem): array
     {
         return [

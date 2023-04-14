@@ -55,6 +55,10 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "ci": [
+            "phpcs",
+            "phpstan"
         ]
     },
     "conflict": {

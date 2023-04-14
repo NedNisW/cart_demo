@@ -1,0 +1,9 @@
+parameters:
+    level: 9
+    paths:
+        - src
+        - tests
+    ignoreErrors:
+        -
+            message: '#Property App\\[a-zA-Z]+\\Entity\\[a-zA-Z]+::\$id is never written, only read.#'
+            path: src/*/Entity/*

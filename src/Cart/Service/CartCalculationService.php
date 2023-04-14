@@ -11,11 +11,14 @@ class CartCalculationService
 {
     public function getCartTotalInEuroCents(Cart $cart): int
     {
-        return $cart->getLineItems()->reduce(
-            function (int $carry, LineItem $lineItem) {
+        /** @var int $totalByItems */
+        $totalByItems = $cart->getLineItems()->reduce(
+            function (?int $carry, LineItem $lineItem) {
                 return $carry + ($lineItem->getAmount() * $lineItem->getProduct()->getPriceInEuroCents());
             },
             0
         );
+
+        return  $totalByItems;
     }
 }

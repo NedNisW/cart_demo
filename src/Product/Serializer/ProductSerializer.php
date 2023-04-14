@@ -10,6 +10,8 @@ class ProductSerializer
 {
     /**
      * @param iterable<Product> $products
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function serializeBatch(iterable $products): array
     {
@@ -21,6 +23,9 @@ class ProductSerializer
         return $data;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function serialize(Product $product): array
     {
         return [

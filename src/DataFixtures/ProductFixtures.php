@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Product\Entity\Product;
@@ -26,7 +28,7 @@ class ProductFixtures extends Fixture
             ->setSku(333)
             ->setTitle('Dell XPS 13", Linux Edition')
             ->setDescription('From Dell but still cool')
-            ->setPriceInEuroCents('99900');
+            ->setPriceInEuroCents(99900);
 
         $manager->persist($macbook);
         $manager->persist($iphone);

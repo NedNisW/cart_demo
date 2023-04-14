@@ -10,12 +10,8 @@ use Throwable;
 
 class LineItemNotFoundException extends Exception
 {
-    public function __construct(public readonly Uuid $lineItemId, int $code = 404, ?Throwable $previous = null)
+    public function __construct(string $message, int $code = 404, ?Throwable $previous = null)
     {
-        parent::__construct(
-            sprintf('Line Item with UUID "%s" not found.', $this->lineItemId),
-            $code,
-            $previous
-        );
+        parent::__construct($message, $code, $previous);
     }
 }
