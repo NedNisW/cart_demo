@@ -28,7 +28,8 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "App\\": "src/",
+            "Tests\\": "tests/"
         }
     },
     "autoload-dev": {
@@ -58,7 +59,8 @@
         ],
         "ci": [
             "phpcs",
-            "phpstan"
+            "phpstan",
+            "phpunit"
         ]
     },
     "conflict": {
@@ -73,6 +75,7 @@
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10.1",
         "squizlabs/php_codesniffer": "^3.7",
         "symfony/maker-bundle": "^1.48"
     }
