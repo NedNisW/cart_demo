@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Product\Controller;
@@ -19,8 +20,7 @@ class ProductController extends AbstractController
     public function __construct(
         private readonly ProductInfoService $productInfoService,
         private readonly ProductSerializer $productSerializer
-    )
-    {
+    ) {
     }
 
     #[Route(path: '/api/products', methods: ['GET'])]
@@ -42,6 +42,4 @@ class ProductController extends AbstractController
             200
         );
     }
-
-
 }
