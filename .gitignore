@@ -13,3 +13,6 @@
 /.phpcs-cache
 /phpcs.xml
 ###< squizlabs/php_codesniffer ###
+
+# PHPStorm settings
+.idea/
