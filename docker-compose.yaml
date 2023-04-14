@@ -1,0 +1,33 @@
+services:
+  php:
+    build:
+      dockerfile: ./docker/php/Dockerfile
+      context: ./
+    volumes:
+      - ./:/var/www/app
+  nginx:
+    build:
+      dockerfile: ./docker/nginx/Dockerfile
+      context: ./
+    volumes:
+      - ./public:/var/www/app/public
+    ports:
+      - "80:80"
+  db:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    volumes:
+      - db-volume:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=asgoodasnew
+      - MYSQL_USER=backend
+      - MYSQL_PASSWORD=notfrontend
+      - MYSQL_ROOT_PASSWORD=secret
+  adminer:
+    image: adminer
+    restart: on-failure
+    ports:
+      - "81:8080"
+volumes:
+  db-volume:

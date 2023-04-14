@@ -1,0 +1,6 @@
+productRoutes:
+  resource: ../src/Product/Controller
+  type: attribute
+cartRoutes:
+  resource: ../src/Cart/Controller
+  type: attribute
