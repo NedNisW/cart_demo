@@ -1,0 +1,282 @@
+openapi: 3.0.3
+info:
+  title: Demo Carts API
+  description: |-
+    This is a demo API for creating, editing and deleting carts and line items
+  version: '0.1'
+servers:
+  - url: http://localhost/api
+tags:
+  - name: cart
+    description: Everything about cart
+  - name: line-item
+    description: A product in the cart enriched with the quantity
+  - name: product
+    description: A purchasable product
+paths:
+  /products:
+    get:
+      tags:
+        - product
+      summary: Returns the list of products
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/pagination_page'
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/pagination_per_page'
+      responses:
+        200:
+          description: List of products paginated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    $ref: '#/components/schemas/pagination_page'
+                  per_page:
+                    $ref: '#/components/schemas/pagination_per_page'
+                  total:
+                    type: integer
+                    description: Total number of products in DB
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/product'
+
+  /carts:
+    post:
+      tags:
+        - cart
+      summary: Create a new Cart
+      description: Create a new Cart where products can be added
+      operationId: addCart
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/uuid'
+  /carts/{cart_id}:
+    delete:
+      tags:
+        - cart
+      summary: Delete a Cart
+      description: Delete a Cart and all line items within that cart
+      operationId: deleteCart
+      parameters:
+        - name: cart_id
+          in: path
+          required: true
+          description: uuid of the cart
+          example: "0180e75d-9734-4b85-8e3c-bf1305137248"
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '204':
+          description: Successful operation
+        '404':
+          description: Cart does not exist
+    get:
+      tags:
+        - cart
+      summary: Get a Cart
+      description: Returns details of a cart and embeds the line items
+      operationId: getCart
+      parameters:
+        - name: cart_id
+          in: path
+          required: true
+          description: uuid of the cart
+          example: "0180e75d-9734-4b85-8e3c-bf1305137248"
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '200':
+          description: Cart details including the line items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cart'
+
+
+
+        '404':
+          description: Cart does not exist
+  /carts/{cart_id}/line-items:
+    post:
+      tags:
+        - line-item
+      description: Add a new Product to the cart
+      parameters:
+        - name: cart_id
+          in: path
+          schema:
+            $ref: '#/components/schemas/uuid'
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  $ref: '#/components/schemas/uuid'
+      responses:
+        201:
+          description: Line Item created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/uuid'
+        500:
+          description: There were problems creating the line item on the cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+  /carts/{cart_id}/line-items/{line_item_id}:
+    delete:
+      tags:
+        - line-item
+      description: Delete the Line items of the cart
+      parameters:
+        - name: cart_id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+        - name: line_item_id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        204:
+          description: Line item was deleted
+        500:
+          description: There was an error deleting the line item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+    patch:
+      tags:
+        - line-item
+      description: Update the line item
+      parameters:
+        - name: cart_id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+        - name: line_item_id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  description: Replaces the current quantity of the line item. If quantity is below or equal zero, the line item gets deleted.
+      responses:
+        204:
+          description: Line item was successful updated
+        500:
+          description: There was an error updating the line item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+components:
+  schemas:
+    pagination_page:
+      type: integer
+      minimum: 1
+      default: 1
+    pagination_per_page:
+      type: integer
+      minimum: 1
+      default: 50
+      maximum: 100
+    uuid:
+      type: string
+      description: "UUID String value"
+      example: "0180e75d-9734-4b85-8e3c-bf1305137248"
+    error_response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error description
+    product:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        sku:
+          type: integer
+          example: 333
+          description: SKU of the Product
+        title:
+          type: string
+          description: Product title
+        description:
+          type: string
+          description: Product description
+        price_in_euro_cents:
+          type: integer
+          description: Product price in Euro cents
+    line_item:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        product:
+          $ref: '#/components/schemas/product'
+        quantity:
+          type: integer
+          minimum: 1
+          description: Quantity of the Product in the Cart
+        cart_id:
+          $ref: '#/components/schemas/uuid'
+    cart:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        total_in_euro_cents:
+          type: integer
+          description: Total sum of the cart in euro cents
+          minimum: 0
+          example: 1267500
+        created_at:
+          type: integer
+          description: UNIX Timestamp of when the cart was created
+          example: 1681670112
+        updated_at:
+          type: integer
+          description: UNIX Timestamp of when the cart was created
+          example: 1681670112
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/line_item'
