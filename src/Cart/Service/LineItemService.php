@@ -41,9 +41,9 @@ class LineItemService
         );
     }
 
-    public function deleteLineItem(LineItem $lineItem): void
+    public function deleteLineItem(LineItem $lineItem, bool $flush = true): void
     {
-        $this->lineItemRepository->delete($lineItem);
+        $this->lineItemRepository->delete($lineItem, $flush);
     }
 
     /**

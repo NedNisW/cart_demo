@@ -12,7 +12,8 @@ use Symfony\Component\Uid\Uuid;
 class CartService
 {
     public function __construct(
-        private readonly CartRepository $cartRepository
+        private readonly CartRepository $cartRepository,
+        private readonly LineItemService $lineItemService
     ) {
     }
 
@@ -49,6 +50,10 @@ class CartService
 
     public function deleteCart(Cart $cart): void
     {
+        foreach ($cart->getLineItems() as $lineItem) {
+            $this->lineItemService->deleteLineItem($lineItem, false);
+        }
+
         $this->cartRepository->delete($cart);
     }
 }

@@ -26,7 +26,7 @@ class LineItemController extends AbstractController
     ) {
     }
 
-    #[Route('/api/carts/{cartId}/line-items')]
+    #[Route('/api/carts/{cartId}/line-items', 'POST')]
     public function addProductToCart(string $cartId, Request $request): JsonResponse
     {
         try {
@@ -47,7 +47,7 @@ class LineItemController extends AbstractController
                 201
             );
         } catch (\Throwable $t) {
-            return new JsonResponse(['message' => $t->getMessage()], $t->getCode() ?: 500);
+            return new JsonResponse(['message' => $t->getMessage()], $t->getCode() >= 400 ? $t->getCode() : 500);
         }
     }
 

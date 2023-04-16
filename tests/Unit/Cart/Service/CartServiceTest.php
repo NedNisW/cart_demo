@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Tests\Unit\Cart\Service;
 
 use App\Cart\Entity\Cart;
+use App\Cart\Entity\LineItem;
 use App\Cart\Exception\CartNotFoundException;
 use App\Cart\Repository\CartRepository;
 use App\Cart\Service\CartService;
+use App\Cart\Service\LineItemService;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
@@ -17,12 +20,16 @@ class CartServiceTest extends TestCase
     private const CART_UUID = '7234875b-9f1c-4f35-adf6-e7a38d268ce7';
 
     private readonly CartRepository&MockObject $cartRepositoryMock;
+    private readonly LineItemService&MockObject $lineItemServiceMock;
+
     private readonly CartService $unit;
 
     protected function setUp(): void
     {
         $this->cartRepositoryMock = self::createMock(CartRepository::class);
-        $this->unit = new CartService($this->cartRepositoryMock);
+        $this->lineItemServiceMock = self::createMock(LineItemService::class);
+
+        $this->unit = new CartService($this->cartRepositoryMock, $this->lineItemServiceMock);
     }
 
     public function testItCreatesNewCart(): void
@@ -87,12 +94,37 @@ class CartServiceTest extends TestCase
         $this->unit->deleteCartById($uuid);
     }
 
-    public function testDeleteCartDeletesIt(): void
+    public function testDeleteCartDeletesItAndAllLineItems(): void
     {
+        $lineItemOne = self::createStub(LineItem::class);
+        $lineItemTwo = self::createStub(LineItem::class);
+        $lineItemsCollection = new ArrayCollection([$lineItemOne, $lineItemTwo]);
+
         $cartStub = self::createStub(Cart::class);
+        $cartStub->method('getLineItems')->willReturn($lineItemsCollection);
+
+        // withConsecutiveCalls was removed with PHPUnit 10 - this is a workaround to
+        // still check if all expected calls were made
+        $notDeletedLineItems = [$lineItemOne, $lineItemTwo];
+        $this->lineItemServiceMock
+            ->expects(self::exactly(2))
+            ->method('deleteLineItem')
+            ->with(
+                self::callback(function (LineItem $itemToDelete) use (&$notDeletedLineItems) {
+                    $itemIdx = array_search($itemToDelete, $notDeletedLineItems);
+                    if (false !== $itemIdx) {
+                        unset($notDeletedLineItems[$itemIdx]);
+                    }
+
+                    return true;
+                }),
+                false
+            );
 
         $this->cartRepositoryMock->expects(self::once())->method('delete')->with($cartStub);
 
         $this->unit->deleteCart($cartStub);
+
+        self::assertEmpty($notDeletedLineItems);
     }
 }

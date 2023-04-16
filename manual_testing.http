@@ -1,0 +1,57 @@
+### Create a Cart
+POST http://localhost/api/carts
+
+> {%
+    client.global.set('cart_id', response.body.id);
+%}
+
+### Delete a Cart
+
+DELETE http://localhost/api/carts/{{cart_id}}
+
+> {%
+    client.global.clear('cart_id');
+    client.global.clear('first_line_item_id');
+    client.global.clear('second_line_item_id');
+%}
+
+### Get a Cart
+
+GET http://localhost/api/carts/{{cart_id}}
+
+### Get Products
+GET http://localhost/api/products
+
+> {%
+    client.global.set('first_product_id', response.body['products'].shift()['id']);
+    client.global.set('last_product_id', response.body['products'].pop()['id']);
+%}
+
+### Add first product to Cart
+POST http://localhost/api/carts/{{cart_id}}/line-items
+Content-Type: application/json
+
+{"product_id":  "{{first_product_id}}"}
+
+> {%
+    client.global.set('first_line_item_id', response.body['id']);
+%}
+
+### Add second product to Cart
+POST http://localhost/api/carts/{{cart_id}}/line-items
+Content-Type: application/json
+
+{"product_id":  "{{last_product_id}}"}
+
+> {%
+    client.global.set('second_line_item_id', response.body['id']);
+%}
+
+### Change Quantity of second Line Item
+PATCH http://localhost/api/carts/{{cart_id}}/line-items/{{second_line_item_id}}
+Content-Type: application/json
+
+{"quantity":  12}
+
+### Delete first Line Item
+DELETE http://localhost/api/carts/{{cart_id}}/line-items/{{first_line_item_id}}
