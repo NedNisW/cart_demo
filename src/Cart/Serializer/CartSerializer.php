@@ -15,7 +15,7 @@ class CartSerializer
     public function __construct(
         private readonly CartCalculationService $cartCalculationService,
         private readonly LineItemSerializer $lineItemSerializer,
-        ?CartSerializerConfig $config
+        ?CartSerializerConfig $config = null
     ) {
         $this->cartSerializerConfig = $config ?? CartSerializerConfig::create();
     }
@@ -39,9 +39,7 @@ class CartSerializer
         $data = $this->getBaseData($cart);
 
         if ($this->cartSerializerConfig->isWithLineItems()) {
-            $data['lineItems'] = $cart->getLineItems()->map(
-                fn (LineItem $item) => $this->lineItemSerializer->serialize($item)
-            )->toArray();
+            $data['line_items'] = $this->lineItemSerializer->serializeBatch($cart->getLineItems());
         }
 
         return $data;
@@ -53,9 +51,10 @@ class CartSerializer
     private function getBaseData(Cart $cart): array
     {
         return [
-            'id' => $cart->getId(),
+            'id' => $cart->getId() ? (string) $cart->getId() : null,
             'total_in_euro_cents' => $this->cartCalculationService->getCartTotalInEuroCents($cart),
-            'created_at' => $cart->getCreatedAt()->getTimestamp(),
+            'created_at' => $cart->getCreatedAt()?->getTimestamp(),
+            'updated_at' => $cart->getUpdatedAt()?->getTimestamp(),
         ];
     }
 }

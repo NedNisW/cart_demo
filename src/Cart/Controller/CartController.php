@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\Cart\Controller;
 
 use App\Cart\Exception\CartNotFoundException;
-use App\Cart\Repository\CartRepository;
 use App\Cart\Serializer\CartSerializer;
 use App\Cart\Serializer\CartSerializerConfig;
 use App\Cart\Service\CartService;
 use App\Common\Uuid\UuidService;
-use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,7 +35,7 @@ class CartController extends AbstractController
     }
 
     #[Route('/api/carts/{cartId}', methods: ['DELETE'])]
-    public function deleteCart(string $cartId, EntityManagerInterface $entityManager): Response
+    public function deleteCart(string $cartId): Response
     {
         try {
             $this->cartService->deleteCartById($this->uuidService->toUuid($cartId));

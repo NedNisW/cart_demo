@@ -6,21 +6,13 @@ namespace App\Cart\Serializer;
 
 class LineItemSerializerConfig
 {
-    private function __construct(private bool $withCartReference)
+    private function __construct(private readonly bool $withCartReference)
     {
     }
 
-    public static function create(bool $withCartReference = false): self
+    public static function create(bool $withCartReference = true): self
     {
         return new self($withCartReference);
-    }
-
-    public function withCartReference(bool $flag): self
-    {
-        $new = clone $this;
-        $new->withCartReference = $flag;
-
-        return $new;
     }
 
     public function isWithCartReference(): bool

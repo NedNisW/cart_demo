@@ -21,7 +21,7 @@ class Cart
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    private ?Uuid $id;
+    private ?Uuid $id = null;
 
     /**
      * @var Collection<int, LineItem>
@@ -30,15 +30,14 @@ class Cart
     private Collection $lineItems;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $createdAt;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $updatedAt;
+    private ?DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
         $this->lineItems = new ArrayCollection();
-        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?Uuid
@@ -46,12 +45,12 @@ class Cart
         return $this->id;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }

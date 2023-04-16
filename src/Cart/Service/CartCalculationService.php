@@ -14,7 +14,7 @@ class CartCalculationService
         /** @var int $totalByItems */
         $totalByItems = $cart->getLineItems()->reduce(
             function (?int $carry, LineItem $lineItem) {
-                return $carry + ($lineItem->getAmount() * $lineItem->getProduct()->getPriceInEuroCents());
+                return $carry + ($lineItem->getQuantity() * $lineItem->getProduct()->getPriceInEuroCents());
             },
             0
         );

@@ -13,8 +13,8 @@ class LineItemSerializer
     private LineItemSerializerConfig $lineItemSerializerConfig;
 
     public function __construct(
-        ?LineItemSerializerConfig $lineItemSerializerConfig,
         private readonly ProductSerializer $productSerializer,
+        ?LineItemSerializerConfig $lineItemSerializerConfig = null,
     ) {
         $this->lineItemSerializerConfig = $lineItemSerializerConfig ?? LineItemSerializerConfig::create();
     }
@@ -38,17 +38,17 @@ class LineItemSerializer
         $data = $this->getBaseData($lineItem);
 
         if ($this->lineItemSerializerConfig->isWithCartReference()) {
-            $data['cart_uuid'] = (string) $lineItem->getCart()->getId();
+            $data['cart_id'] = (string) $lineItem->getCart()->getId();
         }
 
         return $data;
     }
 
     /**
-     * @param Traversable<LineItem> $traversable
+     * @param iterable<LineItem> $traversable
      * @return array<int, array<string, mixed>>
      */
-    public function serializeAll(Traversable $traversable): array
+    public function serializeBatch(iterable $traversable): array
     {
         $data = [];
 
@@ -65,9 +65,9 @@ class LineItemSerializer
     private function getBaseData(LineItem $lineItem): array
     {
         return [
-            'id' => $lineItem->getId(),
+            'id' => $lineItem->getId() ? (string) $lineItem->getId() : null,
             'product' => $this->productSerializer->serialize($lineItem->getProduct()),
-            'amount' => $lineItem->getAmount(),
+            'quantity' => $lineItem->getQuantity(),
         ];
     }
 }

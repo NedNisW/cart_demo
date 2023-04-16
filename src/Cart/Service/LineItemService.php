@@ -34,19 +34,6 @@ class LineItemService
         return $lineItem;
     }
 
-    public function getLineItemByCartAndSku(Uuid $cartId, int $sku): LineItem
-    {
-        $lineItem = $this->lineItemRepository->findByCartAndProduct($cartId, $sku);
-
-        if (!$lineItem) {
-            throw new LineItemNotFoundException(
-                sprintf('Line Item for Cart "%s" and SKU "%d" not found.', $cartId, $sku)
-            );
-        }
-
-        return $lineItem;
-    }
-
     public function deleteLineItemByIdAndCart(Uuid $lineItemId, Uuid $cartId): void
     {
         $this->deleteLineItem(
@@ -61,8 +48,9 @@ class LineItemService
 
     /**
      * @throws ProductAlreadyInCartException
+     * @throws InvalidArgumentException
      */
-    public function createByCartAndProduct(Cart $cart, Product $product, int $amount = 1): LineItem
+    public function createByCartAndProduct(Cart $cart, Product $product, int $quantity = 1): LineItem
     {
         $cartId = $cart->getId();
         $productId = $product->getId();
@@ -70,11 +58,15 @@ class LineItemService
             throw new InvalidArgumentException('Either Cart or Product has no ID set.');
         }
 
+        if ($quantity <= 0) {
+            throw new InvalidArgumentException('Quantity must be greater than zero.');
+        }
+
         if ($this->lineItemRepository->existByCartAndProduct($cartId, $productId)) {
             throw new ProductAlreadyInCartException($cartId, $productId);
         }
 
-        $lineItem = LineItem::createForCartAndProduct($cart, $product, $amount);
+        $lineItem = LineItem::createForCartAndProduct($cart, $product, $quantity);
         $this->lineItemRepository->save($lineItem);
 
         return $lineItem;
@@ -82,7 +74,7 @@ class LineItemService
 
     public function updateLineItem(LineItem $lineItem, LineItemUpdateValueObject $updateValues): void
     {
-        $newAmount = $updateValues->getNewAmount();
+        $newAmount = $updateValues->getNewQuantity();
         if ($newAmount !== null && $newAmount <= 0) {
             $this->deleteLineItem($lineItem);
 
@@ -90,7 +82,7 @@ class LineItemService
         }
 
         if ($newAmount > 0) {
-            $lineItem->setAmount($newAmount);
+            $lineItem->setQuantity($newAmount);
         }
 
         $this->lineItemRepository->save($lineItem);

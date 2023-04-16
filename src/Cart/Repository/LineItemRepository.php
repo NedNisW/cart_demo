@@ -19,11 +19,6 @@ class LineItemRepository extends ServiceEntityRepository
         parent::__construct($registry, LineItem::class);
     }
 
-    public function findByCartAndProduct(Uuid $cartId, int $sku): ?LineItem
-    {
-        return $this->findOneBy(['cart' => $cartId, 'product' => $sku]);
-    }
-
     public function findByIdAndCart(Uuid $lineItemId, Uuid $cartId): ?LineItem
     {
         return $this->findOneBy(['id' => $lineItemId, 'cart' => $cartId]);

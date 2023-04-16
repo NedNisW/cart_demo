@@ -9,7 +9,7 @@ use InvalidArgumentException;
 class LineItemUpdateValueObject
 {
     private function __construct(
-        private ?int $newAmount = null
+        private ?int $newQuantity = null
     ) {
     }
 
@@ -25,21 +25,21 @@ class LineItemUpdateValueObject
     {
         $instance = new self();
 
-        if (isset($requestData['amount'])) {
-            if (!is_int($requestData['amount'])) {
-                throw new InvalidArgumentException('amount must be integer value');
+        if (isset($requestData['quantity'])) {
+            if (!is_int($requestData['quantity'])) {
+                throw new InvalidArgumentException('quantity must be integer value');
             }
 
-            $instance->newAmount = $requestData['amount'];
+            $instance->newQuantity = $requestData['quantity'];
         }
 
         return $instance;
     }
 
-    public function withNewAmount(?int $newAmount): self
+    public function withNewQuantity(?int $newQuantity): self
     {
         $new = clone $this;
-        $new->newAmount = $newAmount;
+        $new->newQuantity = $newQuantity;
 
         return $new;
     }
@@ -47,8 +47,8 @@ class LineItemUpdateValueObject
     /**
      * @return int|null
      */
-    public function getNewAmount(): ?int
+    public function getNewQuantity(): ?int
     {
-        return $this->newAmount;
+        return $this->newQuantity;
     }
 }

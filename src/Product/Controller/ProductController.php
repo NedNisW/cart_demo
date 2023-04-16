@@ -9,7 +9,6 @@ use App\Product\Service\ProductInfoService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
@@ -24,10 +23,10 @@ class ProductController extends AbstractController
     }
 
     #[Route(path: '/api/products', methods: ['GET'])]
-    public function listProducts(Request $request): Response
+    public function listProducts(Request $request): JsonResponse
     {
         $page = (int) $request->query->get('page', 1);
-        $limit = min((int) $request->query->get('limit', self::DEFAULT_LIMIT), self::MAX_LIMIT);
+        $limit = min((int) $request->query->get('per_page', self::DEFAULT_LIMIT), self::MAX_LIMIT);
 
         $productsCount = $this->productInfoService->getTotalNumOfProducts();
         $products = $this->productInfoService->getProducts($page, $limit);

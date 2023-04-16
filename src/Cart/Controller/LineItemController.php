@@ -27,7 +27,7 @@ class LineItemController extends AbstractController
     }
 
     #[Route('/api/carts/{cartId}/line-items')]
-    public function addProductToCart(string $cartId, Request $request): Response
+    public function addProductToCart(string $cartId, Request $request): JsonResponse
     {
         try {
             $cart = $this->cartService->getCartById(
@@ -43,7 +43,7 @@ class LineItemController extends AbstractController
             $lineItem = $this->lineItemService->createByCartAndProduct($cart, $product);
 
             return new JsonResponse(
-                ['id' => $lineItem->getId()],
+                ['id' => (string) $lineItem->getId()],
                 201
             );
         } catch (\Throwable $t) {

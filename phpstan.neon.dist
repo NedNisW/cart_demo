@@ -7,3 +7,8 @@ parameters:
         -
             message: '#Property App\\[a-zA-Z]+\\Entity\\[a-zA-Z]+::\$id is never written, only read.#'
             path: src/*/Entity/*
+        -
+            messages:
+                - '#Class .* has an uninitialized readonly property.*#'
+                - '#Readonly property .* is assigned outside of the constructor#'
+            path: tests/*

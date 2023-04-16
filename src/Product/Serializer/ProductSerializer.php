@@ -29,7 +29,7 @@ class ProductSerializer
     public function serialize(Product $product): array
     {
         return [
-            'id' => $product->getId(),
+            'id' => $product->getId() ? (string) $product->getId() : null,
             'sku' => $product->getSku(),
             'title' => $product->getTitle(),
             'description' => $product->getDescription(),

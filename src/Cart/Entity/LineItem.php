@@ -29,7 +29,7 @@ class LineItem
     private Product $product;
 
     #[ORM\Column]
-    private int $amount;
+    private int $quantity;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $createdAt;
@@ -37,12 +37,12 @@ class LineItem
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $updatedAt;
 
-    public static function createForCartAndProduct(Cart $cart, Product $product, int $amount): self
+    public static function createForCartAndProduct(Cart $cart, Product $product, int $quantity): self
     {
         return (new self())
             ->setCart($cart)
             ->setProduct($product)
-            ->setAmount($amount);
+            ->setQuantity($quantity);
     }
 
     public function getId(): ?Uuid
@@ -74,14 +74,14 @@ class LineItem
         return $this;
     }
 
-    public function getAmount(): int
+    public function getQuantity(): int
     {
-        return $this->amount;
+        return $this->quantity;
     }
 
-    public function setAmount(int $amount): self
+    public function setQuantity(int $quantity): self
     {
-        $this->amount = $amount;
+        $this->quantity = $quantity;
 
         return $this;
     }
