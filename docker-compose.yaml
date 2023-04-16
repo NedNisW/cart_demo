@@ -20,7 +20,7 @@ services:
     volumes:
       - db-volume:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=asgoodasnew
+      - MYSQL_DATABASE=cart_demo
       - MYSQL_USER=backend
       - MYSQL_PASSWORD=notfrontend
       - MYSQL_ROOT_PASSWORD=secret

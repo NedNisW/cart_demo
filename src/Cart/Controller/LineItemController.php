@@ -26,7 +26,7 @@ class LineItemController extends AbstractController
     ) {
     }
 
-    #[Route('/api/carts/{cartId}/line-items', 'POST')]
+    #[Route(path: '/api/carts/{cartId}/line-items', methods: 'POST')]
     public function addProductToCart(string $cartId, Request $request): JsonResponse
     {
         try {
@@ -40,7 +40,7 @@ class LineItemController extends AbstractController
             $productId = is_string($rawData['product_id'] ?? null) ? $rawData['product_id'] : '';
             $product = $this->productInfoService->getProduct($this->uuidService->toUuid($productId));
 
-            $lineItem = $this->lineItemService->createByCartAndProduct($cart, $product);
+            $lineItem = $this->lineItemService->createByartAndProduct($cart, $product);
 
             return new JsonResponse(
                 ['id' => (string) $lineItem->getId()],
