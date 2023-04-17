@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Common\Uuid;
+namespace App\Tests\Unit\Common\Uuid;
 
 use App\Common\Uuid\Exception\UuidInvalidException;
 use App\Common\Uuid\UuidService;

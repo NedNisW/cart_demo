@@ -40,7 +40,7 @@ class LineItemController extends AbstractController
             $productId = is_string($rawData['product_id'] ?? null) ? $rawData['product_id'] : '';
             $product = $this->productInfoService->getProduct($this->uuidService->toUuid($productId));
 
-            $lineItem = $this->lineItemService->createByartAndProduct($cart, $product);
+            $lineItem = $this->lineItemService->createByCartAndProduct($cart, $product);
 
             return new JsonResponse(
                 ['id' => (string) $lineItem->getId()],

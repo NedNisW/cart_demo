@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Cart\Controller;
+namespace App\Tests\Unit\Cart\Controller;
 
 use App\Cart\Controller\CartController;
 use App\Cart\Entity\Cart;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Product\Serializer;
+namespace App\Tests\Unit\Product\Serializer;
 
 use App\Product\Entity\Product;
 use App\Product\Serializer\ProductSerializer;

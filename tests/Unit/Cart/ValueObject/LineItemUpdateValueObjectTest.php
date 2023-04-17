@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Cart\ValueObject;
+namespace App\Tests\Unit\Cart\ValueObject;
 
 use App\Cart\ValueObject\LineItemUpdateValueObject;
 use InvalidArgumentException;

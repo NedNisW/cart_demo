@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Cart\Serializer;
+namespace App\Tests\Unit\Cart\Serializer;
 
 use App\Cart\Entity\Cart;
 use App\Cart\Serializer\CartSerializer;

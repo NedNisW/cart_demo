@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Product\Service;
+namespace App\Tests\Unit\Product\Service;
 
 use App\Product\Entity\Product;
 use App\Product\Exception\ProductNotFoundException;

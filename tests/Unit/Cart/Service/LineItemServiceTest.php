@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Cart\Service;
+namespace App\Tests\Unit\Cart\Service;
 
 use App\Cart\Entity\Cart;
 use App\Cart\Entity\LineItem;

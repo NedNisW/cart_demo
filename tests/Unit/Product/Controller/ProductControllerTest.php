@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Product\Controller;
+namespace App\Tests\Unit\Product\Controller;
 
 use App\Product\Controller\ProductController;
 use App\Product\Entity\Product;
